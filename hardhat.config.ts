@@ -8,6 +8,13 @@ import "hardhat-gas-reporter";
 import "solidity-coverage";
 import "hardhat-prettier";
 import "@nomiclabs/hardhat-ethers";
+import "hardhat-circom";
+
+import circuits from "./circuits.config.json";
+import "./tasks/newcircuit.ts";
+
+// tasks
+process.env.BASE_PATH = __dirname;
 
 dotenv.config();
 
@@ -25,7 +32,16 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 // Go to https://hardhat.org/config/ to learn more
 
 const config: HardhatUserConfig = {
-  solidity: "0.8.17",
+  solidity: {
+    compilers: [
+      {
+        version: "0.8.17",
+      },
+      {
+        version: "0.6.11",
+      },
+    ],
+  },
   networks: {
     mainnet: {
       url: process.env.MAINNET_URL || "",
@@ -39,6 +55,14 @@ const config: HardhatUserConfig = {
     mumbai: {
       url: process.env.MUMBAI_URL || "",
     },
+  },
+  circom: {
+    // (optional) Base path for input files, defaults to `./circuits/`
+    inputBasePath: "./circuits",
+    // (required) The final ptau file, relative to inputBasePath, from a Phase 1 ceremony
+    ptau: "powersOfTau28_hez_final_12.ptau",
+    // (required) Each object in this array refers to a separate circuit
+    circuits: JSON.parse(JSON.stringify(circuits)),
   },
   gasReporter: {
     enabled: process.env.REPORT_GAS !== undefined,

@@ -1,6 +1,14 @@
-# Hardhat Boilerplate
+## hardhat-circom-boilerplate
 
 ```shell
-yarn run hardhat node # run node at localhost
-yarn run hardhat accounts # display wallet addresses and private keys
+yarn
+npx hardhat circom
+npx hardhat compile
+npx hardhat run scripts/deploy.ts --network {your-network}
+```
+
+new circuit
+
+```shell
+npx hardhat newcircuit --name multiplier
 ```
