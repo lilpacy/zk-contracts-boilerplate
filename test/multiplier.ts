@@ -23,29 +23,6 @@ function p256(n: any): BigNumber {
   return BigNumber.from(nstr);
 }
 
-async function generateCallData(): Promise<ICallData> {
-  const zkProof = await generateProof();
-
-  const proof = unstringifyBigInts(zkProof.proof);
-  const pub = unstringifyBigInts(zkProof.publicSignals);
-
-  let inputs = "";
-  for (let i = 0; i < pub.length; i++) {
-    if (inputs !== "") inputs = inputs + ",";
-    inputs = inputs + p256(pub[i]);
-  }
-
-  const pi_a = [p256(proof.pi_a[0]), p256(proof.pi_a[1])];
-  const pi_b = [
-    [p256(proof.pi_b[0][1]), p256(proof.pi_b[0][0])],
-    [p256(proof.pi_b[1][1]), p256(proof.pi_b[1][0])],
-  ];
-  const pi_c = [p256(proof.pi_c[0]), p256(proof.pi_c[1])];
-  const input = [inputs];
-
-  return { pi_a, pi_b, pi_c, input };
-}
-
 async function generateProof() {
   // read input parameters
   const inputData = fs.readFileSync(BASE_PATH + "input.json", "utf8");
@@ -71,6 +48,29 @@ async function generateProof() {
   );
 
   return proof;
+}
+
+async function generateCallData(): Promise<ICallData> {
+  const zkProof = await generateProof();
+
+  const proof = unstringifyBigInts(zkProof.proof);
+  const pub = unstringifyBigInts(zkProof.publicSignals);
+
+  let inputs = "";
+  for (let i = 0; i < pub.length; i++) {
+    if (inputs !== "") inputs = inputs + ",";
+    inputs = inputs + p256(pub[i]);
+  }
+
+  const pi_a = [p256(proof.pi_a[0]), p256(proof.pi_a[1])];
+  const pi_b = [
+    [p256(proof.pi_b[0][1]), p256(proof.pi_b[0][0])],
+    [p256(proof.pi_b[1][1]), p256(proof.pi_b[1][0])],
+  ];
+  const pi_c = [p256(proof.pi_c[0]), p256(proof.pi_c[1])];
+  const input = [inputs];
+
+  return { pi_a, pi_b, pi_c, input };
 }
 
 describe("MultiplierVerifier", function () {
